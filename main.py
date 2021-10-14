@@ -6,13 +6,22 @@ def X_matrix43():
     return xmatr43
 
 
-def gen_matrix(n, k, d):
-    gen_matrix = np.eye(k)
+def gen_matrix47(row):
+    gen_matrix = np.eye(row)
     Xmatr = X_matrix43()
     gen_matrix = np.hstack((gen_matrix, Xmatr))
     return gen_matrix
 
 
+def check_matrix73(d):
+    check_matrix = np.eye(d)
+    Xmatr = X_matrix43()
+    check_matrix = np.vstack(( Xmatr, check_matrix))
+    return check_matrix
+
+
 if __name__ == '__main__':
-    mat = gen_matrix(7, 4, 3)
-    print(mat)
+    gen = gen_matrix47(4)
+    check = check_matrix73(3)
+    print(gen)
+    print(check)
