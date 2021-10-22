@@ -46,7 +46,6 @@ def find_one_error(take_word):
     print("Отправленное сообщение:", sent_word())
     print("Полученное сообщение:", take_word)
     result = np.dot(take_word, check_matrix73(3)) % 2
-    print(result)
     if np.all(result == 0):
         print("Исправленное сообщение:", take_word)
         return take_word
