@@ -62,9 +62,7 @@ def find_one_error(take_word):
 
 def find_two_error():
     result = find_one_error(take_word())
-    print("Первая ошибка исправлена")
-    res = find_one_error(result)
-    return res
+    return result
 
 
 def number_errors_and_fix():
