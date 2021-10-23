@@ -86,6 +86,57 @@ def number_errors_and_fix():
     if k > 2:
         print("Ошибок больше, чем две")
         return 0
+    
+def X_matrix_fill(x, n, k, d):
+    while(x.shape[0] != k+1):
+            string = np.random.randint(0, 2, (1, n-k))
+            if(np.sum(string) >= d-1):
+                x = np.vstack((x, string))
+    return x
+
+
+def X_matrix(n, k, d):
+    if(k >= 3):
+        result = np.random.randint(0, 1, (1, n-k))
+        count = 0
+        while(result.shape[0] != k+1):
+            if(result.shape[0] != k+1):
+                result = X_matrix_fill(result, n, k, d)
+                
+            for d_i in range(2, d-1):
+                combinations = set(itertools.permutations(range(1, result.shape[0]), d_i))
+                strings = np.zeros(n-k)
+                delete_indexes = []
+                for i in combinations:
+                    for u in range(d_i):
+                        strings += result[i[u]] 
+                    strings = strings % 2
+                    if(np.sum(strings) < d - d_i):
+                        for u in range(d_i):
+                            delete_indexes.append(i[u])
+                    strings = np.zeros(n-k)
+                delete_indexes = list( dict.fromkeys(delete_indexes))
+                result = np.delete(result, delete_indexes, axis=0)
+                if(result.shape[0] != k+1):
+                    continue
+            count += 1
+            if(count > 10000):
+                return "too complicated task: maybe incorrect values, please change n or k values"
+        return np.delete(result, 0, axis=0)
+    else: 
+        return "incorrect values"
+    
+def gen_matrix(n, k, d):
+    gen_matrix = np.eye(k)
+    Xmatr = X_matrix_nkd(n, k, d)
+    gen_matrix = np.hstack((gen_matrix, Xmatr))
+    return gen_matrix
+
+def check_matrix(n, k, d):
+    check_matrix = np.eye(n-k)
+    Xmatr = X_matrix_nkd(n, k, d)
+    check_matrix = np.vstack((Xmatr, check_matrix))
+    return check_matrix
 
 
 if __name__ == '__main__':
