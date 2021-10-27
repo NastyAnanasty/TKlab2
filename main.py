@@ -96,7 +96,7 @@ def X_matrix_fill(x, n, k, d):
 
 
 def X_matrix(n, k, d):
-    if(k >= 3):
+    if(k >= 3 and n-k > d):
         result = np.random.randint(0, 1, (1, n-k))
         count = 0
         while(result.shape[0] != k+1):
