@@ -173,17 +173,61 @@ def syndromes_table2(matrix, n):
 
 
 # 2.9
-# def task2_9():
-#     code_word =
-
-
-# 2.10
 def code_word_from_k_to_n(k_word, n, k, d):
     g_matrix = gen_matrix(n, k, d)
     n_word = np.dot(k_word, g_matrix)
     return n_word
 
 
+def make_random_n_word_for_single_mistake(n):
+    random_arr = []
+
+    for i in range(n):
+        random_arr.append(0)
+
+    first_place_for_one = math.floor(random.uniform(0, n - 1))
+    random_arr[first_place_for_one] = 1
+
+    return random_arr
+
+
+def make_single_mistake_in_n_word(n_word):
+    n = n_word.size()
+    random_n_word_for_single_mistake = make_random_n_word_for_single_mistake(n)
+    return n_word + random_n_word_for_single_mistake
+
+
+def row_index_in_matrix(row, matrix):
+    index = -1
+    for i in range(matrix.shape[0]):
+        if row == matrix[i]:
+            index = i
+            break
+    return index
+
+
+def two_point_nine_task(n, k, d, matrix):
+    k_word = []
+    for i in range(k):
+        k_word.append(math.floor(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(k_word, n, k, d)
+    n_word_with_mistake = make_single_mistake_in_n_word(n_word)
+    syndrome_for_n_word = n_word @ lab1.LinearMatrix(matrix).getH()
+    syndromes_table = syndromes_table2(matrix, n)
+    row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
+    if row_num == -1:
+        print("Неизвестная ошибка при поиске синдрома в таблице в задаче 2.9")
+    else:
+        errors_table = get_two_errors_table(n)
+        error = errors_table[row_num]
+        may_be_n_word = n_word_with_mistake - error
+        if n_word == may_be_n_word:
+            print("2.9 работает корректно")
+        else:
+            print("2.9 работает некорректно")
+
+
+# 2.10
 def make_random_n_word_for_double_mistake(n):
     random_arr = []
 
@@ -192,6 +236,8 @@ def make_random_n_word_for_double_mistake(n):
 
     first_place_for_one = math.floor(random.uniform(0, n - 1))
     second_place_for_one = math.floor(random.uniform(0, n - 1))
+    while second_place_for_one == first_place_for_one:
+        second_place_for_one = math.floor(random.uniform(0, n - 1))
     random_arr[first_place_for_one] = 1
     random_arr[second_place_for_one] = 1
 
@@ -202,15 +248,6 @@ def make_double_mistake_in_n_word(n_word):
     n = n_word.size()
     random_n_word_for_double_mistake = make_random_n_word_for_double_mistake(n)
     return n_word + random_n_word_for_double_mistake
-
-
-def row_index_in_matrix(row, matrix):
-    index = -1
-    for i in range(matrix.shape[0]):
-        if row == matrix[i]:
-            index = i
-            break
-    return index
 
 
 def two_point_ten_task(n, k, d, matrix):
@@ -232,6 +269,54 @@ def two_point_ten_task(n, k, d, matrix):
             print("2.10 работает корректно")
         else:
             print("2.10 работает некорректно")
+
+
+# 2.11
+def make_random_n_word_for_triple_mistake(n):
+    random_arr = []
+
+    for i in range(n):
+        random_arr.append(0)
+
+    first_place_for_one = math.floor(random.uniform(0, n - 1))
+    second_place_for_one = math.floor(random.uniform(0, n - 1))
+    third_place_for_one = math.floor(random.uniform(0, n - 1))
+    while second_place_for_one == first_place_for_one:
+        second_place_for_one = math.floor(random.uniform(0, n - 1))
+    while third_place_for_one == first_place_for_one or third_place_for_one == second_place_for_one:
+        third_place_for_one = math.floor(random.uniform(0, n - 1))
+    random_arr[first_place_for_one] = 1
+    random_arr[second_place_for_one] = 1
+    random_arr[third_place_for_one] = 1
+
+    return random_arr
+
+
+def make_triple_mistake_in_n_word(n_word):
+    n = n_word.size()
+    random_n_word_for_triple_mistake = make_random_n_word_for_triple_mistake(n)
+    return n_word + random_n_word_for_triple_mistake
+
+
+def two_point_eleven_task(n, k, d, matrix):
+    k_word = []
+    for i in range(k):
+        k_word.append(math.floor(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(k_word, n, k, d)
+    n_word_with_mistake = make_triple_mistake_in_n_word(n_word)
+    syndrome_for_n_word = n_word @ lab1.LinearMatrix(matrix).getH()
+    syndromes_table = syndromes_table2(matrix, n)
+    row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
+    if row_num == -1:
+        print("Нет синдрома в таблице, который получается при создании тройной ошибки в задаче 2.11")
+    else:
+        errors_table = get_two_errors_table(n)
+        error = errors_table[row_num]
+        may_be_n_word = n_word_with_mistake - error
+        if n_word == may_be_n_word:
+            print("2.11 работает некорректно, так как нашли слово")
+        else:
+            print("2.11 работает корректно, так как не нашли слово")
 
 
 if __name__ == '__main__':
