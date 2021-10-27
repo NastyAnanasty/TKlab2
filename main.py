@@ -1,4 +1,6 @@
 import itertools
+import math
+import random
 
 import numpy as np
 import lab1
@@ -166,15 +168,77 @@ def get_two_errors_table(n):
 
 
 # 2.8 - сформировать таблицу синдромов
-def syndroms_table2(matrix, n):
-    lab1.LinearMatrix(matrix).getH() @ get_two_errors_table(n)
+def syndromes_table2(matrix, n):
+    return lab1.LinearMatrix(matrix).getH() @ get_two_errors_table(n)
+
 
 # 2.9
 # def task2_9():
 #     code_word =
 
 
+# 2.10
+def code_word_from_k_to_n(k_word, n, k, d):
+    g_matrix = gen_matrix(n, k, d)
+    n_word = np.dot(k_word, g_matrix)
+    return n_word
+
+
+def make_random_n_word_for_double_mistake(n):
+    random_arr = []
+
+    for i in range(n):
+        random_arr.append(0)
+
+    first_place_for_one = math.floor(random.uniform(0, n - 1))
+    second_place_for_one = math.floor(random.uniform(0, n - 1))
+    random_arr[first_place_for_one] = 1
+    random_arr[second_place_for_one] = 1
+
+    return random_arr
+
+
+def make_double_mistake_in_n_word(n_word):
+    n = n_word.size()
+    random_n_word_for_double_mistake = make_random_n_word_for_double_mistake(n)
+    return n_word + random_n_word_for_double_mistake
+
+
+def row_index_in_matrix(row, matrix):
+    index = -1
+    for i in range(matrix.shape[0]):
+        if row == matrix[i]:
+            index = i
+            break
+    return index
+
+
+def two_point_ten_task(n, k, d, matrix):
+    k_word = []
+    for i in range(k):
+        k_word.append(math.floor(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(k_word, n, k, d)
+    n_word_with_mistake = make_double_mistake_in_n_word(n_word)
+    syndrome_for_n_word = n_word @ lab1.LinearMatrix(matrix).getH()
+    syndromes_table = syndromes_table2(matrix, n)
+    row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
+    if row_num == -1:
+        print("Неизвестная ошибка при поиске синдрома в таблице в задаче 2.10")
+    else:
+        errors_table = get_two_errors_table(n)
+        error = errors_table[row_num]
+        may_be_n_word = n_word_with_mistake - error
+        if n_word == may_be_n_word:
+            print("2.10 работает корректно")
+        else:
+            print("2.10 работает некорректно")
+
+
 if __name__ == '__main__':
     word = number_errors_and_fix()
-    matrix = X_matrix(13, 6, 5)
-    print("syndroms2 = ",syndroms_table2(matrix, 13))
+    n = 13
+    k = 6
+    d = 5
+    matrix = X_matrix(n, k, d)
+    two_point_ten_task(n, k, d, matrix)
+    print("syndromes 2 = ", syndromes_table2(matrix, n))
