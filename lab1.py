@@ -122,10 +122,10 @@ class LinearMatrix(object):
         self.matrix = self.rref()
 
         short_matrix = self.get_short_matrix()
-        identity_matrix = np.identity(self.k)
+        identity_matrix = np.identity(self.n - self.k)
 
-        h_matrix_rows = self.k + row_size(short_matrix)
-        h_matrix = create_matrix(h_matrix_rows, self.k)
+        h_matrix_rows = self.n - self.k + row_size(short_matrix)
+        h_matrix = create_matrix(h_matrix_rows, self.n - self.k)
 
         j = 0
         for i in range(0, h_matrix_rows):
