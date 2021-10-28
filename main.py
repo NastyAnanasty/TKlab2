@@ -169,7 +169,6 @@ def get_two_errors_table(n):
     words = words % 2
     for i in range(words.shape[0]):
         if 2 == np.sum(words[i]):
-            #np.append(error_table, [words[i]], axis=0)
             error_table = np.vstack([error_table, words[i]])
 
     return error_table
