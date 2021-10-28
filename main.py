@@ -129,13 +129,19 @@ def X_matrix(n, k, d):
 def gen_matrix(n, k, d):
     gen_matrix = np.eye(k)
     Xmatr = X_matrix_nkd(n, k, d)
-    gen_matrix = np.hstack((gen_matrix, Xmatr))
+    try: 
+        gen_matrix = np.hstack((gen_matrix, Xmatr))
+    except ValueError:
+        return "incorrect values"
     return gen_matrix
 
 def check_matrix(n, k, d):
     check_matrix = np.eye(n-k)
     Xmatr = X_matrix_nkd(n, k, d)
-    check_matrix = np.vstack((Xmatr, check_matrix))
+    try:
+        check_matrix = np.vstack((Xmatr, check_matrix))
+    except ValueError:
+        return "incorrect values"
     return check_matrix
 
 
