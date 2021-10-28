@@ -102,8 +102,8 @@ def X_matrix_fill(x, n, k, d):
 
 
 def X_matrix(n, k, d):
-    if (k >= 3):
-        result = np.random.randint(0, 1, (1, n - k))
+    if(k >= 3 and n-k > d):
+        result = np.random.randint(0, 1, (1, n-k))
         count = 0
         while (result.shape[0] != k + 1):
             if (result.shape[0] != k + 1):
@@ -135,15 +135,21 @@ def X_matrix(n, k, d):
 
 def gen_matrix(n, k, d):
     gen_matrix = np.eye(k)
-    Xmatr = X_matrix(n, k, d)
-    gen_matrix = np.hstack((gen_matrix, Xmatr))
+    Xmatr = X_matrix_nkd(n, k, d)
+    try: 
+        gen_matrix = np.hstack((gen_matrix, Xmatr))
+    except ValueError:
+        return "incorrect values"
     return gen_matrix
 
 
 def check_matrix(n, k, d):
-    check_matrix = np.eye(n - k)
-    Xmatr = X_matrix(n, k, d)
-    check_matrix = np.vstack((Xmatr, check_matrix))
+    check_matrix = np.eye(n-k)
+    Xmatr = X_matrix_nkd(n, k, d)
+    try:
+        check_matrix = np.vstack((Xmatr, check_matrix))
+    except ValueError:
+        return "incorrect values
     return check_matrix
 
 
