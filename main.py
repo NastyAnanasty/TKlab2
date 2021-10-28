@@ -181,8 +181,8 @@ def syndromes_table2(matrix, n):
 
 
 # 2.9
-def code_word_from_k_to_n(k_word, n, k, d):
-    g_matrix = gen_matrix(n, k, d)
+def code_word_from_k_to_n(g_matrix, k_word, n, k, d):
+    #g_matrix = gen_matrix(n, k, d)
     n_word = np.dot(k_word, g_matrix)
     return n_word
 
@@ -193,7 +193,7 @@ def make_random_n_word_for_single_mistake(n):
     for i in range(n):
         random_arr.append(0)
 
-    first_place_for_one = math.floor(random.uniform(0, n - 1))
+    first_place_for_one = round_num(random.uniform(0, n - 1))
     random_arr[first_place_for_one] = 1
 
     return random_arr
@@ -208,19 +208,26 @@ def make_single_mistake_in_n_word(n_word):
 def row_index_in_matrix(row, matrix):
     index = -1
     for i in range(matrix.shape[0]):
-        if (row == matrix[i]).all():
+        if np.array_equiv(row, matrix[i]):
             index = i
             break
     return index
+
+def round_num(num):
+    new_num = num - math.floor(num)
+    if 0.5 <= new_num < 1:
+        return math.ceil(num)
+    else:
+        return math.floor(num)
 
 
 def two_point_nine_task(n, k, d, matrix):
     k_word = []
     for i in range(k):
-        k_word.append(math.floor(random.uniform(0, 1)))
-    n_word = code_word_from_k_to_n(k_word, n, k, d)
-    n_word_with_mistake = make_single_mistake_in_n_word(n_word)
-    syndrome_for_n_word = n_word_with_mistake @ lab1.LinearMatrix(matrix).getH()
+        k_word.append(round_num(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(matrix, k_word, n, k, d) % 2
+    n_word_with_mistake = make_single_mistake_in_n_word(n_word) % 2
+    syndrome_for_n_word = (n_word_with_mistake @ lab1.LinearMatrix(matrix).getH()) % 2
     syndromes_table = syndromes_table2(matrix, n)
     row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
     if row_num == -1:
@@ -228,8 +235,8 @@ def two_point_nine_task(n, k, d, matrix):
     else:
         errors_table = get_two_errors_table(n)
         error = errors_table[row_num]
-        may_be_n_word = n_word_with_mistake - error
-        if (n_word == may_be_n_word).all():
+        may_be_n_word = np.abs(n_word_with_mistake - error)
+        if np.array_equiv(n_word, may_be_n_word):
             print("2.9 работает корректно")
         else:
             print("2.9 работает некорректно")
@@ -242,10 +249,10 @@ def make_random_n_word_for_double_mistake(n):
     for i in range(n):
         random_arr.append(0)
 
-    first_place_for_one = math.floor(random.uniform(0, n - 1))
-    second_place_for_one = math.floor(random.uniform(0, n - 1))
+    first_place_for_one = round_num(random.uniform(0, n - 1))
+    second_place_for_one = round_num(random.uniform(0, n - 1))
     while second_place_for_one == first_place_for_one:
-        second_place_for_one = math.floor(random.uniform(0, n - 1))
+        second_place_for_one = round_num(random.uniform(0, n - 1))
     random_arr[first_place_for_one] = 1
     random_arr[second_place_for_one] = 1
 
@@ -261,10 +268,10 @@ def make_double_mistake_in_n_word(n_word):
 def two_point_ten_task(n, k, d, matrix):
     k_word = []
     for i in range(k):
-        k_word.append(math.floor(random.uniform(0, 1)))
-    n_word = code_word_from_k_to_n(k_word, n, k, d)
-    n_word_with_mistake = make_double_mistake_in_n_word(n_word)
-    syndrome_for_n_word = n_word_with_mistake @ lab1.LinearMatrix(matrix).getH()
+        k_word.append(round_num(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(matrix, k_word, n, k, d) % 2
+    n_word_with_mistake = make_double_mistake_in_n_word(n_word) % 2
+    syndrome_for_n_word = (n_word_with_mistake @ lab1.LinearMatrix(matrix).getH()) % 2
     syndromes_table = syndromes_table2(matrix, n)
     row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
     if row_num == -1:
@@ -272,8 +279,8 @@ def two_point_ten_task(n, k, d, matrix):
     else:
         errors_table = get_two_errors_table(n)
         error = errors_table[row_num]
-        may_be_n_word = n_word_with_mistake - error
-        if (n_word == may_be_n_word).all():
+        may_be_n_word = np.abs(n_word_with_mistake - error)
+        if np.array_equiv(n_word, may_be_n_word):
             print("2.10 работает корректно")
         else:
             print("2.10 работает некорректно")
@@ -286,13 +293,13 @@ def make_random_n_word_for_triple_mistake(n):
     for i in range(n):
         random_arr.append(0)
 
-    first_place_for_one = math.floor(random.uniform(0, n - 1))
-    second_place_for_one = math.floor(random.uniform(0, n - 1))
-    third_place_for_one = math.floor(random.uniform(0, n - 1))
+    first_place_for_one = round_num(random.uniform(0, n - 1))
+    second_place_for_one = round_num(random.uniform(0, n - 1))
+    third_place_for_one = round_num(random.uniform(0, n - 1))
     while second_place_for_one == first_place_for_one:
-        second_place_for_one = math.floor(random.uniform(0, n - 1))
+        second_place_for_one = round_num(random.uniform(0, n - 1))
     while third_place_for_one == first_place_for_one or third_place_for_one == second_place_for_one:
-        third_place_for_one = math.floor(random.uniform(0, n - 1))
+        third_place_for_one = round_num(random.uniform(0, n - 1))
     random_arr[first_place_for_one] = 1
     random_arr[second_place_for_one] = 1
     random_arr[third_place_for_one] = 1
@@ -309,10 +316,10 @@ def make_triple_mistake_in_n_word(n_word):
 def two_point_eleven_task(n, k, d, matrix):
     k_word = []
     for i in range(k):
-        k_word.append(math.floor(random.uniform(0, 1)))
-    n_word = code_word_from_k_to_n(k_word, n, k, d)
-    n_word_with_mistake = make_triple_mistake_in_n_word(n_word)
-    syndrome_for_n_word = n_word @ lab1.LinearMatrix(matrix).getH()
+        k_word.append(round_num(random.uniform(0, 1)))
+    n_word = code_word_from_k_to_n(matrix, k_word, n, k, d) % 2
+    n_word_with_mistake = make_triple_mistake_in_n_word(n_word) % 2
+    syndrome_for_n_word = n_word_with_mistake @ lab1.LinearMatrix(matrix).getH() % 2
     syndromes_table = syndromes_table2(matrix, n)
     row_num = row_index_in_matrix(syndrome_for_n_word, syndromes_table)
     if row_num == -1:
@@ -320,8 +327,8 @@ def two_point_eleven_task(n, k, d, matrix):
     else:
         errors_table = get_two_errors_table(n)
         error = errors_table[row_num]
-        may_be_n_word = n_word_with_mistake - error
-        if n_word == may_be_n_word:
+        may_be_n_word = np.abs(n_word_with_mistake - error)
+        if np.array_equiv(n_word, may_be_n_word):
             print("2.11 работает некорректно, так как нашли слово")
         else:
             print("2.11 работает корректно, так как не нашли слово")
